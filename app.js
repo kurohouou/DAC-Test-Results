@@ -1548,16 +1548,6 @@
 
       loadUrlState();
 
-      // Default starter chart comparison if none provided in URL
-      if (state.plottedIds.length === 0) {
-        const starter = [
-          findItemBySubstring('rgb', 'SuperStation One'),
-          findItemBySubstring('rgb', 'Reflex Prisim - VGA'),
-          findItemBySubstring('rgb', 'goFanco'),
-        ].filter(Boolean);
-        state.plottedIds = starter.map((it) => it.id);
-      }
-
       syncControlsFromState();
       populateIcDropdown();
       renderTabCountsAndStats();
