@@ -261,22 +261,6 @@
       <article class="info-card">
         <h2 class="info-card-title">Important Hardware Footnotes &amp; Warnings</h2>
         <dl class="footnote-list">
-          <div class="footnote-item" id="fn-1">
-            <dt><span class="fn-marker">*</span> Assumed IC / Chipset</dt>
-            <dd>Chip used in the DAC is inferred from mV curve signatures matching other opened and verified ICs; shell was not opened for 100% visual confirmation.</dd>
-          </div>
-          <div class="footnote-item" id="fn-2">
-            <dt><span class="fn-marker">**</span> Outputs RGBHV Only (Not RGBS)</dt>
-            <dd>DAC outputs separate H/V sync (RGBHV) and will not pass composite sync (RGBS) directly. Requires an external sync combiner (such as an Extron RXi) if your monitor requires RGBS.</dd>
-          </div>
-          <div class="footnote-item" id="fn-3">
-            <dt><span class="fn-marker">***</span> Tendak Silent Chip Swap Warning</dt>
-            <dd>Newer revisions of the Tendak DAC <strong>will not work with MiSTer</strong> (confirmed across multiple units). Tendak switched the internal IC from <code>CM6616S</code> to <code>ZY6511-EX</code>.</dd>
-          </div>
-          <div class="footnote-item" id="fn-4">
-            <dt><span class="fn-marker">****</span> ICY BOX Sync Timing Note</dt>
-            <dd>Some ICY BOX units have been reported to have sync quirks or take longer to re-sync on resolution switches than other DACs. A quick stress test is <em>Sonic the Hedgehog 2</em> split-screen (interlaced 2P mode).</dd>
-          </div>
           <div class="footnote-item" id="fn-snes">
             <dt><span class="fn-marker fn-green">S-Curve</span> SNES 240p Test Suite Gamma Note</dt>
             <dd>The SNES core's output curve naturally tracks slightly lower (&minus;2 to &minus;6 mV) below 50 IRE and slightly higher (+8 to +18 mV) at 50 IRE and above compared to a pure PC gray ramp (MisterCast + HCFR).</dd>

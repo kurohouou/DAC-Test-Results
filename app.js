@@ -578,7 +578,7 @@
     if (!count) return '';
     const stars = '*'.repeat(count);
     const tip = FOOTNOTE_TOOLTIPS[count] || '';
-    return `<a href="#fn-${count}" class="fn-tag" title="${escapeHtml(tip)}">${stars}</a>`;
+    return `<span class="fn-tag" title="${escapeHtml(tip)}">${stars}</span>`;
   }
 
   function getHeatmapClass(absDelta) {
