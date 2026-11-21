@@ -1528,15 +1528,16 @@
     initCsvBuilderModal();
 
     try {
+      const cb = `?t=${Date.now()}`;
       const [rgbTxt, compTxt, svidTxt, cvbsTxt, snesTxt] = await Promise.all([
-        fetch(SIGNAL_CONFIG.rgb.csvPath, { cache: 'no-cache' }).then((r) => {
+        fetch(`${SIGNAL_CONFIG.rgb.csvPath}${cb}`, { cache: 'no-store' }).then((r) => {
           if (!r.ok) throw new Error(`HTTP ${r.status} loading ${SIGNAL_CONFIG.rgb.csvPath}`);
           return r.text();
         }),
-        fetch(SIGNAL_CONFIG.component.csvPath, { cache: 'no-cache' }).then((r) => r.text()),
-        fetch(SIGNAL_CONFIG.svideo.csvPath, { cache: 'no-cache' }).then((r) => r.text()),
-        fetch(SIGNAL_CONFIG.composite.csvPath, { cache: 'no-cache' }).then((r) => r.text()),
-        fetch('./data/snes-s-curve.csv', { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')),
+        fetch(`${SIGNAL_CONFIG.component.csvPath}${cb}`, { cache: 'no-store' }).then((r) => r.text()),
+        fetch(`${SIGNAL_CONFIG.svideo.csvPath}${cb}`, { cache: 'no-store' }).then((r) => r.text()),
+        fetch(`${SIGNAL_CONFIG.composite.csvPath}${cb}`, { cache: 'no-store' }).then((r) => r.text()),
+        fetch(`./data/snes-s-curve.csv${cb}`, { cache: 'no-store' }).then((r) => (r.ok ? r.text() : '')),
       ]);
 
       state.datasets.rgb = buildDataset('rgb', rgbTxt);
