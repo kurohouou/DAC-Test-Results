@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAC &amp; Analog I/O Voltage Test Results</title>
+  <meta name="description" content="Searchable oscilloscope IRE voltage benchmark database for HDMI-to-VGA DACs, MiSTer FPGA Analog I/O boards, SuperStation One, and retro gaming video converters." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f172a'/%3E%3Cpath d='M4 22 L10 18 L15 19 L19 11 L24 8 L28 6' fill='none' stroke='%2322c55e' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='4' y1='22' x2='28' y2='6' stroke='%2364748b' stroke-width='1.3' stroke-dasharray='2.5 2.5'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-group">
+        <div class="brand-badge" aria-hidden="true">
+          <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
+            <rect x="2" y="4" width="24" height="20" rx="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M5 19L9.5 16L13.5 16.5L16.5 11.5L20.5 9.5L23 8" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="5" y1="19" x2="23" y2="8" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.2" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="site-title">DAC &amp; Analog I/O Voltage Test Results</h1>
+          <p class="site-subtitle">0–100 IRE oscilloscope voltage benchmarks for MiSTer FPGA, retro consoles &amp; HDMI-to-analog DACs</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <a href="#grading-guide" class="btn btn-ghost btn-sm">Grading &amp; Notes</a>
+        <button type="button" id="openCsvBuilderBtn" class="btn btn-secondary btn-sm" title="Generate a formatted CSV row to paste into data/*.csv on GitHub">
+          + CSV Row Helper
+        </button>
+        <button type="button" id="themeToggleBtn" class="btn btn-icon" aria-label="Toggle color theme" title="Switch dark/light theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <!-- Signal Type Tabs -->
+    <nav class="signal-tabs-bar" aria-label="Video signal test categories">
+      <div class="signal-tabs" id="signalTabs" role="tablist">
+        <button type="button" role="tab" class="signal-tab active" data-tab="rgb" aria-selected="true">
+          <span>RGB Full Range</span>
+          <span class="tab-count" id="count-rgb">0</span>
+        </button>
+        <button type="button" role="tab" class="signal-tab" data-tab="component" aria-selected="false">
+          <span>Component (YPbPr)</span>
+          <span class="tab-count" id="count-component">0</span>
+        </button>
+        <button type="button" role="tab" class="signal-tab" data-tab="svideo" aria-selected="false">
+          <span>S-Video</span>
+          <span class="tab-count" id="count-svideo">0</span>
+        </button>
+        <button type="button" role="tab" class="signal-tab" data-tab="composite" aria-selected="false">
+          <span>Composite</span>
+          <span class="tab-count" id="count-composite">0</span>
+        </button>
+        <button type="button" role="tab" class="signal-tab" data-tab="all" aria-selected="false">
+          <span>All Signals</span>
+          <span class="tab-count" id="count-all">0</span>
+        </button>
+      </div>
+
+      <div class="summary-stats" id="summaryStats" aria-live="polite"></div>
+    </nav>
+
+    <!-- Search & Filter Controls -->
+    <section class="controls-card" aria-label="Search and filter DAC results">
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="search"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search DAC / I/O board, IC chip (CS5213, ADV7215, AG6200), Amazon ASIN, or notes… (Press /)"
+            autocomplete="off"
+          />
+          <button type="button" id="clearSearchBtn" class="clear-search-btn hidden" aria-label="Clear search">✕</button>
+        </div>
+
+        <div class="select-group">
+          <label for="icFilter" class="sr-only">Filter by IC / Chipset</label>
+          <select id="icFilter" class="control-select">
+            <option value="">All ICs / Designs</option>
+          </select>
+
+          <label for="sortSelect" class="sr-only">Sort results</label>
+          <select id="sortSelect" class="control-select">
+            <option value="sheet-asc">Sort: Original Order</option>
+            <option value="rating-desc">Sort: Rating (5★ → 1★)</option>
+            <option value="maxerr-asc">Sort: Lowest Error (Max |ΔmV|)</option>
+            <option value="date-desc">Sort: Newest Tested</option>
+            <option value="name-asc">Sort: Name (A → Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filters-row">
+        <div class="rating-pills" id="ratingPills" role="group" aria-label="Filter by star rating">
+          <button type="button" class="pill active" data-rating="all">All Ratings</button>
+          <button type="button" class="pill pill-5" data-rating="5">★★★★★ Reference</button>
+          <button type="button" class="pill pill-4" data-rating="4">★★★★ Great</button>
+          <button type="button" class="pill pill-3" data-rating="3">★★★ Good</button>
+          <button type="button" class="pill pill-2" data-rating="2">★★ Useable</button>
+          <button type="button" class="pill pill-1" data-rating="1">★ Avoid</button>
+          <button type="button" class="pill pill-0" data-rating="0">Unrated</button>
+        </div>
+
+        <div class="view-toggles">
+          <label class="toggle-chip">
+            <input type="checkbox" id="hideIncompleteToggle" />
+            <span>Measured Only</span>
+          </label>
+          <label class="toggle-chip">
+            <input type="checkbox" id="heatmapToggle" checked />
+            <span>Heatmap Cells</span>
+          </label>
+          <label class="toggle-chip">
+            <input type="checkbox" id="deltaSubtextToggle" />
+            <span>Show ΔmV</span>
+          </label>
+          <button type="button" id="resetFiltersBtn" class="btn btn-ghost btn-xs hidden">Reset Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive IRE Voltage Curve & Error Chart -->
+    <section class="chart-card" id="chartSection" aria-label="Interactive IRE voltage curve comparison">
+      <div class="chart-header">
+        <div class="chart-title-group">
+          <button type="button" id="collapseChartBtn" class="chart-collapse-btn" aria-expanded="true" title="Collapse or expand chart">
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="5 8 10 13 15 8"/>
+            </svg>
+          </button>
+          <div>
+            <h2 class="section-title">IRE Voltage Curve &amp; Deviation Comparison</h2>
+            <p class="section-caption">Click <strong>+ Chart</strong> on any table row below to compare up to 6 devices against Reference &amp; SNES 240p S-Curve</p>
+          </div>
+        </div>
+
+        <div class="chart-controls">
+          <div class="segmented-control" role="group" aria-label="Chart y-axis mode">
+            <button type="button" class="seg-btn active" data-chart-mode="delta">ΔmV Deviation</button>
+            <button type="button" class="seg-btn" data-chart-mode="absolute">Full Curve (0–770 mV)</button>
+          </div>
+
+          <label class="toggle-chip snes-curve-chip" title="Overlay the DE10 FPGA SNES 240p Test Suite S-Gamma Curve (slightly lower <50 IRE, slightly higher >=50 IRE)">
+            <input type="checkbox" id="showSnesCurveToggle" checked />
+            <span>SNES S-Curve</span>
+          </label>
+
+          <div class="preset-group">
+            <select id="chartPresetSelect" class="control-select control-select-sm" aria-label="Load comparison preset">
+              <option value="">Presets…</option>
+              <option value="top-ref">5★ Reference Picks</option>
+              <option value="ref-vs-ag6200">Reference vs AG6200 Black Crush</option>
+              <option value="io-boards">MiSTer I/O Boards Showdown</option>
+              <option value="snes-vs-hcfr">SNES S-Curve vs MisterCast HCFR</option>
+            </select>
+            <button type="button" id="clearChartBtn" class="btn btn-ghost btn-xs">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="chartBody" class="chart-body">
+        <div id="selectedSeriesBar" class="selected-series-bar"></div>
+        <div class="chart-stage" id="chartStage">
+          <svg id="ireChartSvg" class="ire-chart-svg" role="img" aria-label="IRE voltage comparison chart"></svg>
+          <div id="chartTooltip" class="chart-tooltip hidden" role="status" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Data Table -->
+    <section class="table-card" aria-label="DAC test results table">
+      <div class="table-toolbar">
+        <div class="results-count-text" id="resultsCountText">Loading CSV data…</div>
+        <div class="table-actions">
+          <button type="button" id="copyShareLinkBtn" class="btn btn-ghost btn-xs" title="Copy URL with current search, tab, and chart selection">
+            Copy Filter Link
+          </button>
+          <button type="button" id="exportCsvBtn" class="btn btn-ghost btn-xs" title="Download currently filtered rows as CSV">
+            Export Filtered CSV
+          </button>
+        </div>
+      </div>
+
+      <div id="errorBanner" class="error-banner hidden" role="alert"></div>
+
+      <div class="table-scroll-wrap">
+        <table class="results-table" id="resultsTable">
+          <thead>
+            <tr id="tableHeaderRow">
+              <th class="col-chart" title="Plot row on interactive IRE chart">Chart</th>
+              <th class="col-name sortable" data-sort="name">DAC or I/O Board</th>
+              <th class="col-signal hidden" id="thSignal">Signal</th>
+              <th class="col-ic sortable" data-sort="ic">IC / Resistor Ladder</th>
+              <th class="col-date sortable" data-sort="date">Tested</th>
+              <th class="col-rating sortable" data-sort="rating">Rating</th>
+              <th class="col-maxerr sortable" data-sort="maxerr" title="Maximum absolute mV deviation from Reference across 0–100 IRE">Max |Δ|</th>
+              <th class="col-ire sortable" data-sort="ire-0">0</th>
+              <th class="col-ire sortable" data-sort="ire-10">10</th>
+              <th class="col-ire sortable" data-sort="ire-20">20</th>
+              <th class="col-ire sortable" data-sort="ire-30">30</th>
+              <th class="col-ire sortable" data-sort="ire-40">40</th>
+              <th class="col-ire sortable" data-sort="ire-50">50</th>
+              <th class="col-ire sortable" data-sort="ire-60">60</th>
+              <th class="col-ire sortable" data-sort="ire-70">70</th>
+              <th class="col-ire sortable" data-sort="ire-80">80</th>
+              <th class="col-ire sortable" data-sort="ire-90">90</th>
+              <th class="col-ire sortable" data-sort="ire-100">100 IRE</th>
+              <th class="col-note">Notes &amp; Observations</th>
+            </tr>
+            <tr id="referenceRow" class="reference-row"></tr>
+          </thead>
+          <tbody id="resultsTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Grading System, Footnotes & SNES S-Curve Reference -->
+    <section class="info-grid" id="grading-guide" aria-label="Grading system and testing notes">
+      <article class="info-card">
+        <h2 class="info-card-title">Grading System</h2>
+        <p class="info-lead">Ratings evaluate peak-to-peak IRE voltage accuracy (<code>1 IRE = 7 mV</code> for 700 mV RGB/YPbPr; <code>7.14 mV</code> for 714 mV S-Video/Composite), RGB channel tracking, black-level linearity, and unit-to-unit consistency.</p>
+        <ul class="grading-list">
+          <li>
+            <span class="grade-badge grade-5">★★★★★ Reference</span>
+            <span>No more than 1 error &gt; 15 mV, little to no separation of R/G/B mV values, no major % difference from reference (e.g. ≤ 5% off), and minimal variability across multiple units.</span>
+          </li>
+          <li>
+            <span class="grade-badge grade-4">★★★★ Great</span>
+            <span>No more than 1 error &gt; 25 mV and &lt; 10 mV of RGB channel separation at 100 IRE.</span>
+          </li>
+          <li>
+            <span class="grade-badge grade-3">★★★ Good</span>
+            <span>No errors &gt; 35 mV and &lt; 15 mV of RGB channel separation at 100 IRE.</span>
+          </li>
+          <li>
+            <span class="grade-badge grade-2">★★ Useable</span>
+            <span>Errors &gt; 35 mV without severe % curve collapse (e.g. runs hot at highlights without crushing shadow detail).</span>
+          </li>
+          <li>
+            <span class="grade-badge grade-1">★ Avoid</span>
+            <span>Greatly impacts viewing experience negatively—major functional faults, severe black crush (&lt; 50 IRE voltage drop typical of AG6200/AG6201), or extreme over-exposure.</span>
+          </li>
+        </ul>
+      </article>
+
+      <article class="info-card">
+        <h2 class="info-card-title">Important Hardware Footnotes &amp; Warnings</h2>
+        <dl class="footnote-list">
+          <div class="footnote-item" id="fn-1">
+            <dt><span class="fn-marker">*</span> Assumed IC / Chipset</dt>
+            <dd>Chip used in the DAC is inferred from mV curve signatures matching other opened and verified ICs; shell was not opened for 100% visual confirmation.</dd>
+          </div>
+          <div class="footnote-item" id="fn-2">
+            <dt><span class="fn-marker">**</span> Outputs RGBHV Only (Not RGBS)</dt>
+            <dd>DAC outputs separate H/V sync (RGBHV) and will not pass composite sync (RGBS) directly. Requires an external sync combiner (such as an Extron RXi) if your monitor requires RGBS.</dd>
+          </div>
+          <div class="footnote-item" id="fn-3">
+            <dt><span class="fn-marker">***</span> Tendak Silent Chip Swap Warning</dt>
+            <dd>Newer revisions of the Tendak DAC <strong>will not work with MiSTer</strong> (confirmed across multiple units). Tendak switched the internal IC from <code>CM6616S</code> to <code>ZY6511-EX</code>.</dd>
+          </div>
+          <div class="footnote-item" id="fn-4">
+            <dt><span class="fn-marker">****</span> ICY BOX Sync Timing Note</dt>
+            <dd>Some ICY BOX units have been reported to have sync quirks or take longer to re-sync on resolution switches than other DACs. A quick stress test is <em>Sonic the Hedgehog 2</em> split-screen (interlaced 2P mode).</dd>
+          </div>
+          <div class="footnote-item" id="fn-snes">
+            <dt><span class="fn-marker fn-green">S-Curve</span> SNES 240p Test Suite Gamma Note</dt>
+            <dd>The SNES core's output curve naturally tracks slightly lower (&minus;2 to &minus;6 mV) below 50 IRE and slightly higher (+8 to +18 mV) at 50 IRE and above compared to a pure PC gray ramp (MisterCast + HCFR).</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+
+    <footer class="site-footer">
+      <p>
+        Data stored directly as plain CSV files in <a href="./data/rgb.csv"><code>data/rgb.csv</code></a>,
+        <a href="./data/component.csv"><code>data/component.csv</code></a>,
+        <a href="./data/svideo.csv"><code>data/svideo.csv</code></a>, and
+        <a href="./data/composite.csv"><code>data/composite.csv</code></a>.
+        Edit any CSV in GitHub to update this page automatically.
+      </p>
+    </footer>
+  </main>
+
+  <!-- CSV Row Helper Modal (makes adding new rows to GitHub CSVs effortless) -->
+  <div id="csvModalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="csvModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="csvModalTitle" class="modal-title">Add New DAC Result — CSV Row Helper</h2>
+          <p class="modal-subtitle">Enter your oscilloscope mV readings below, preview IRE deviations, then copy the formatted CSV line into <code>data/*.csv</code> on GitHub.</p>
+        </div>
+        <button type="button" id="closeCsvModalBtn" class="btn btn-icon" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="csvBuilderForm" class="modal-body">
+        <div class="form-grid-3">
+          <label class="field">
+            <span>Target CSV File</span>
+            <select id="bSignal" class="control-select">
+              <option value="rgb">data/rgb.csv (Ref 700 mV)</option>
+              <option value="component">data/component.csv (Ref 700 mV)</option>
+              <option value="svideo">data/svideo.csv (Ref 714 mV)</option>
+              <option value="composite">data/composite.csv (Ref 714 mV)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>DAC or I/O Board Name *</span>
+            <input type="text" id="bName" class="control-input" placeholder="e.g. RetroTINK / MiSTer Board" required />
+          </label>
+          <label class="field">
+            <span>IC / Resistor Ladder</span>
+            <input type="text" id="bIc" class="control-input" placeholder="e.g. ADV7125, CS5213" />
+          </label>
+        </div>
+
+        <div class="form-grid-4">
+          <label class="field">
+            <span>Test Date</span>
+            <input type="text" id="bDate" class="control-input" placeholder="MM/DD/YYYY" />
+          </label>
+          <label class="field">
+            <span>Pattern Generator</span>
+            <input type="text" id="bPatGen" class="control-input" value="SNES 240P Test Suite" />
+          </label>
+          <label class="field">
+            <span>Star Rating</span>
+            <select id="bRating" class="control-select">
+              <option value="*****">***** (5★ Reference)</option>
+              <option value="****">**** (4★ Great)</option>
+              <option value="***">*** (3★ Good)</option>
+              <option value="**">** (2★ Useable)</option>
+              <option value="*">* (1★ Avoid)</option>
+              <option value="">Unrated / Did Not Test</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Product URL (optional)</span>
+            <input type="url" id="bUrl" class="control-input" placeholder="https://..." />
+          </label>
+        </div>
+
+        <div class="ire-inputs-section">
+          <div class="ire-inputs-header">
+            <span>Measured mV at 10 IRE Increments (leave <code>-</code> if untested)</span>
+            <span id="builderDeltaSummary" class="builder-delta-summary"></span>
+          </div>
+          <div class="ire-inputs-grid" id="builderIreGrid"></div>
+        </div>
+
+        <label class="field">
+          <span>Notes &amp; Scope Observations</span>
+          <textarea id="bNote" class="control-textarea" rows="2" placeholder="RGB channel separation, black crush, sync behavior, dip switch settings..."></textarea>
+        </label>
+
+        <div class="field">
+          <span>Generated CSV Line (append to bottom of <code id="targetCsvPathLabel">data/rgb.csv</code>)</span>
+          <div class="csv-output-row">
+            <input type="text" id="csvOutputPreview" class="control-input mono-input" readonly />
+            <button type="button" id="copyCsvRowBtn" class="btn btn-primary">Copy CSV Row</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
