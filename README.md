@@ -2,6 +2,8 @@
 
 Oscilloscope **0–100 IRE** analog video voltage benchmarks for **HDMI-to-VGA DACs**, **MiSTer FPGA Analog I/O Boards**, **SuperStation One**, **Analogue DAC / Pocket**, and retro gaming video converters.
 
+👉 **[Search & Compare Results on the Interactive Page](https://kurohouou.github.io/DAC-Test-Results/)**
+
 ---
 
 ## Data Files (Plain CSV)
@@ -58,19 +60,3 @@ As soon as you commit an edit to `main`, GitHub Pages serves the updated CSV aut
 - `***` — Newer versions of the Tendak DAC switched from `CM6616S` to `ZY6511-EX` and **will not work with MiSTer**.
 - `****` — Some ICY BOX DACs have reported sync quirks or slower re-syncing (quick test: *Sonic 2* interlaced 2P mode).
 - **SNES Gamma Note** — The SNES 240p Test Suite gamma curve tracks slightly lower (< 50 IRE) and slightly higher (≥ 50 IRE) compared to linear reference.
-
----
-
-## Publishing on GitHub Pages
-
-1. Push this repository to GitHub (e.g., `dac-test-results`).
-2. On GitHub, go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**, select **`main`** and **`/ (root)`**, and click **Save**.
-4. Your searchable site will be live at `https://<your-username>.github.io/<repo-name>/` (and you can point `tinyurl.com/dactestresults` straight to that URL!).
-
-### Local Preview
-Because browsers restrict `fetch()` over `file://`, preview locally using any lightweight static server:
-
-```bash
-npx serve .
-```
