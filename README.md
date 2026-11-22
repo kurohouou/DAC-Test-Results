@@ -1,5 +1,19 @@
 # DAC & Analog I/O Voltage Test Results
 
+## Background & Purpose
+
+I started this project back in 2022 when I got into the MiSTer FPGA gaming ecosystem. Back then, many of the Analog I/O boards and inexpensive DACs sold online did a poor job of converting digital signals into proper analog video output for CRT TVs. Images could be overly dark or blown out, causing crushed shadow detail or clipped highlights. If you want to learn more about what I was looking for and my testing methodology, [read my full write-up here](https://docs.google.com/document/d/1Fz3OfWZgftiTfqG-_JCBJku4a0qzDZeWzmEk4S3Iyjk).
+
+Since this project began, the hardware landscape has improved significantly. Most new MiSTer I/O boards are now properly tested and engineered for accurate video output, and even budget-friendly DACs sold online largely meet proper video standards. While there are still occasional outliers, the overall trend toward better hardware quality has been great to see and I am glad the work I started helped contribute to this trend!
+
+## Acknowledgements & Disclaimer
+
+Thank you to everyone who has helped along the way or sent review units for testing—though the vast majority of this was self-funded for the benefit of the retro gaming community. 
+
+*Note: I am not a professional video processing engineer; I have learned through hands-on testing along the way. If an error is ever found in the data, I will verify and correct it as soon as possible.*
+
+---
+
 Oscilloscope **0–100 IRE** analog video voltage benchmarks for **HDMI-to-VGA DACs**, **MiSTer FPGA Analog I/O Boards**, **SuperStation One**, **Analogue DAC / Pocket**, and retro gaming video converters.
 
 👉 **[Search & Compare Results on the Interactive Page](https://kurohouou.github.io/DAC-Test-Results/)**
