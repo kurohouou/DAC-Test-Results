@@ -22,30 +22,6 @@ GitHub renders these `.csv` files as searchable tables in the repository view, a
 
 ---
 
-## How to Add or Edit Test Results (Directly on GitHub)
-
-You never need Google Sheets again. You have two easy ways to add a new DAC test:
-
-### Option 1: Use the "+ CSV Row Helper" on the GitHub Pages Site (Easiest)
-1. Click **+ CSV Row Helper** in the top-right corner of the live GitHub Pages site.
-2. Fill in the DAC name, IC, test date, rating, `0–100 IRE` mV readings, optional product URL, and notes (it automatically calculates `ΔmV` errors and handles CSV quoting for commas).
-3. Click **Copy CSV Row**, open the matching file in GitHub (`data/rgb.csv`, `data/component.csv`, `data/svideo.csv`, or `data/composite.csv`), click the **Edit (pencil)** icon, paste the new line at the bottom, and click **Commit changes**.
-
-### Option 2: Edit `data/*.csv` Directly
-Each CSV uses the same 18 columns:
-
-```csv
-DAC or IO Board,IC/Resistor Ladder,Test Date,Pattern Generator,Rating,0 IRE,10 IRE,20 IRE,30 IRE,40 IRE,50 IRE,60 IRE,70 IRE,80 IRE,90 IRE,100 IRE,Product URL,Note
-```
-
-- **Rating**: Use `*****` (5★ Reference), `****` (4★ Great), `***` (3★ Good), `**` (2★ Useable), `*` (1★ Avoid), or leave blank for unrated/no-output units.
-- **Untested IRE cells**: Use `-` if a device had no output or testing stopped early.
-- **Commas in Notes**: Wrap the `Note` field in double quotes (`"..."`) if it contains commas.
-
-As soon as you commit an edit to `main`, GitHub Pages serves the updated CSV automatically.
-
----
-
 ## Grading System
 
 - **★★★★★ Reference** — No more than 1 error > 15 mV, little to no separation of R/G/B mV values, no major % difference from reference (e.g. ≤ 5%), and minimal unit-to-unit variability.
